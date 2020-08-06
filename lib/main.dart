@@ -3,6 +3,7 @@ import 'widget/basic/text.dart';
 import 'widget/basic/image.dart';
 import 'widget/basic/icon.dart';
 import 'widget/singleChild/container.dart';
+import 'widget/multiChild/columnRow.dart';
 
 void main() => runApp(MyApp());
 
@@ -76,6 +77,14 @@ class FirstPage extends StatelessWidget {
                   }));
                 },
                 child: Text('Container Page'),
+              ),
+              RaisedButton(
+                onPressed: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) {
+                    return ColumnRowPage();
+                  }));
+                },
+                child: Text('MultiChild Page'),
               ),
             ],
           )

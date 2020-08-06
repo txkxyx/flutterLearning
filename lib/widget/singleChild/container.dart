@@ -86,7 +86,7 @@ class ContainerPage extends StatelessWidget {
                     }));
                   },
                   child: Text('FittedBox'),
-                ) 
+                )
               ],
             )
           ],
