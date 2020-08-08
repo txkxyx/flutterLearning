@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:my_app/widget/scroll/scrollPage.dart';
 import 'widget/basic/text.dart';
 import 'widget/basic/image.dart';
 import 'widget/basic/icon.dart';
 import 'widget/singleChild/container.dart';
 import 'widget/multiChild/columnRow.dart';
-
+import './widget/paintEffect/paintEffect.dart';
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
@@ -29,7 +30,7 @@ class FirstPage extends StatelessWidget {
       ),
       body: Column(
         children: <Widget>[
-          Row(children: <Widget>[
+          Wrap(children: <Widget>[
             RaisedButton(
               onPressed: () async {
                 var message = await Navigator.push(
@@ -68,7 +69,7 @@ class FirstPage extends StatelessWidget {
               child: Text('Icon Page'),
             ),
           ]),
-          Row(
+          Wrap(
             children: <Widget>[
               RaisedButton(
                 onPressed: () {
@@ -85,6 +86,22 @@ class FirstPage extends StatelessWidget {
                   }));
                 },
                 child: Text('MultiChild Page'),
+              ),
+              RaisedButton(
+                onPressed: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) {
+                    return PaintEffectPage();
+                  }));
+                },
+                child: Text('PainteEffect Page'),
+              ),
+              RaisedButton(
+                onPressed: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) {
+                    return ScrollPage();
+                  }));
+                },
+                child: Text('Scroll Page'),
               ),
             ],
           )
