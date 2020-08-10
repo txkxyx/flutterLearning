@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:my_app/widget/input/input.dart';
+import 'package:my_app/widget/interaction/interraction.dart';
 import 'package:my_app/widget/scroll/scrollPage.dart';
 import 'widget/basic/text.dart';
 import 'widget/basic/image.dart';
@@ -111,6 +112,14 @@ class FirstPage extends StatelessWidget {
                   }));
                 },
                 child: Text('Input Page'),
+              ),
+              RaisedButton(
+                onPressed: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) {
+                    return InteractionPage();
+                  }));
+                },
+                child: Text('Interaction Page'),
               ),
             ],
           )
