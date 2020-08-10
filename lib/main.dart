@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:my_app/material/material.dart';
 import 'package:my_app/widget/input/input.dart';
 import 'package:my_app/widget/interaction/interraction.dart';
 import 'package:my_app/widget/scroll/scrollPage.dart';
@@ -8,6 +9,7 @@ import 'widget/basic/icon.dart';
 import 'widget/singleChild/container.dart';
 import 'widget/multiChild/columnRow.dart';
 import './widget/paintEffect/paintEffect.dart';
+
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
@@ -16,9 +18,25 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
+      // Material Theme
+      // アプリ内の統一的なテーマを指定する
       theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
+          // アプリ全体のカラー
+          primarySwatch: Colors.blue,
+          //アクセントカラー
+          accentColor: Colors.red,
+          //ボタンやテキスト・アイコンの設定
+          buttonTheme: ButtonThemeData(
+            textTheme: ButtonTextTheme.primary,
+            // ボタンの角を調整
+            shape: RoundedRectangleBorder(
+              borderRadius: const BorderRadius.all(Radius.circular(24)),
+            ),
+          ),
+          iconTheme:
+              const IconThemeData.fallback().copyWith(color: Colors.red)),
+      // Darkモードのテーマを指定する
+      darkTheme: ThemeData(),
       home: FirstPage(),
     );
   }
@@ -120,6 +138,18 @@ class FirstPage extends StatelessWidget {
                   }));
                 },
                 child: Text('Interaction Page'),
+              ),
+            ],
+          ),
+          Wrap(
+            children: <Widget>[
+              RaisedButton(
+                onPressed: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) {
+                    return MaterialPage();
+                  }));
+                },
+                child: Text('Material Page'),
               ),
             ],
           )
