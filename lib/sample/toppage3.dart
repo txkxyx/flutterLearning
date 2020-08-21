@@ -1,20 +1,20 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:my_app/sample/toppage0.dart';
+import 'package:provider/provider.dart';
 
-class CounterLogic {
-  final _valueController = StreamController<int>();
-
-  Stream<int> get value => _valueController.stream;
-
-  int _counter = 0;
-
-  CounterLogic() {
-    _valueController.sink.add(_counter);
+class LoadingBloc {
+  LoadingBloc() {
+    loading(false);
   }
 
-  void incrementCounter() async {
-    _valueController.sink.add(++_counter);
+  final _valueController = StreamController<bool>();
+
+  Stream<bool> get value => _valueController.stream;
+
+  loading(bool loading) {
+    _valueController.sink.add(loading);
   }
 
   void dispose() {
@@ -22,56 +22,88 @@ class CounterLogic {
   }
 }
 
-class TopPage3_0 extends StatefulWidget {
-  @override
-  _TopPgaeState createState() => _TopPgaeState();
+class CounterBloc {
+  final CountRepository _repository;
+  final LoadingBloc _loadingBloc;
+
+  final _valueController = StreamController<int>();
+
+  Stream<int> get value => _valueController.stream;
+
+  int _counter = 0;
+
+  CounterBloc(this._repository, this._loadingBloc) {
+    _valueController.sink.add(_counter);
+  }
+
+  void incrementCounter() async {
+    _loadingBloc.loading(true);
+
+    var increaseCount = await _repository.fetch().whenComplete(() {
+      _loadingBloc.loading(false);
+    });
+
+    _counter += increaseCount;
+
+    _valueController.sink.add(_counter);
+  }
+
+  void dispose() {
+    _valueController.close();
+  }
 }
 
-class _TopPgaeState extends State<TopPage3_0> {
-  CounterLogic counterLogic;
+class TopPage3 extends StatelessWidget {
+  final CountRepository _repository;
 
-  @override
-  void initState() {
-    super.initState();
-    counterLogic = CounterLogic();
-  }
+  TopPage3(this._repository);
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Bloc Simple Sample'),
-      ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+    return MultiProvider(
+      providers: [
+        Provider<LoadingBloc>(
+          create: (_) => LoadingBloc(),
+          dispose: (_, bloc) => bloc.dispose(),
+        ),
+        Provider<CounterBloc>(
+          create: (context) {
+            var bloc = Provider.of<LoadingBloc>(context, listen: false);
+            return CounterBloc(_repository, bloc);
+          },
+          dispose: (_, bloc) => bloc.dispose(),
+        )
+      ],
+      child: Stack(
         children: <Widget>[
-          _WidgetA(counterLogic),
-          _WidgetB(),
-          _WidgetC(counterLogic)
+          Scaffold(
+            appBar: AppBar(
+              title: const Text('Bloc Provider Demo'),
+            ),
+            body: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[
+                _WidgetA(),
+                _WidgetB(),
+                _WidgetC(),
+              ],
+            ),
+          ),
+          const LoadingWidget3()
         ],
       ),
     );
   }
-
-  @override
-  void dispose() {
-    counterLogic.dispose();
-    super.dispose();
-  }
 }
 
 class _WidgetA extends StatelessWidget {
-  final CounterLogic counterLogic;
-
-  _WidgetA(this.counterLogic);
-
   @override
   Widget build(BuildContext context) {
+    print("called _WidgetA#build()");
+    var bloc = Provider.of<CounterBloc>(context, listen: false);
     return Center(
-      // StreamBuilder
-      child: StreamBuilder(
-        stream: counterLogic.value,
-        // 非同期処理もOK
+      child: StreamBuilder<int>(
+        stream: bloc.value,
         builder: (context, snapshot) {
           return Text(
             '${snapshot.data}',
@@ -86,22 +118,44 @@ class _WidgetA extends StatelessWidget {
 class _WidgetB extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return const Text('Stream Builder Sample');
+    print("called _WidgetB#build()");
+    return const Text('I am a widget that will not be rebuilt.');
   }
 }
 
 class _WidgetC extends StatelessWidget {
-  final CounterLogic counterLogic;
-
-  _WidgetC(this.counterLogic);
-
   @override
   Widget build(BuildContext context) {
+    print("called _WidgetC#build()");
     return RaisedButton(
       onPressed: () {
-        counterLogic.incrementCounter();
+        Provider.of<CounterBloc>(context, listen: false).incrementCounter();
       },
       child: Icon(Icons.add),
     );
+  }
+}
+
+class LoadingWidget3 extends StatelessWidget {
+  const LoadingWidget3();
+
+  @override
+  Widget build(BuildContext context) {
+    var bloc = Provider.of<LoadingBloc>(context);
+    return StreamBuilder<bool>(
+        initialData: false,
+        stream: bloc.value,
+        builder: (context, snapshot) {
+          return (snapshot.data)
+              ? const DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: Color(0x44000000),
+                  ),
+                  child: Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                )
+              : const SizedBox.shrink();
+        });
   }
 }

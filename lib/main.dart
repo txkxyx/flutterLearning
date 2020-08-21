@@ -3,6 +3,7 @@ import 'package:my_app/material/material.dart';
 import 'package:my_app/sample/toppage0.dart';
 import 'package:my_app/sample/toppage1.dart';
 import 'package:my_app/sample/toppage3.dart';
+import 'package:my_app/sample/toppage3_0.dart';
 import 'package:my_app/sample/toppage3_1.dart';
 import 'package:my_app/widget/input/input.dart';
 import 'package:my_app/widget/interaction/interraction.dart';
@@ -121,6 +122,19 @@ class MyHomePage extends StatelessWidget {
                 MaterialPageRoute(
                   builder: (context) {
                     return TopPage3_1(_repository);
+                  },
+                ),
+              );
+            },
+          ),
+          ListTile(
+            title: const Text('Bloc Provier Sample'),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) {
+                    return TopPage3(_repository);
                   },
                 ),
               );
