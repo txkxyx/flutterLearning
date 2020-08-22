@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:my_app/material/material.dart';
+import 'package:my_app/model/loading.dart';
 import 'package:my_app/sample/toppage0.dart';
 import 'package:my_app/sample/toppage1.dart';
+import 'package:my_app/sample/toppage2.dart';
 import 'package:my_app/sample/toppage3.dart';
 import 'package:my_app/sample/toppage3_0.dart';
 import 'package:my_app/sample/toppage3_1.dart';
@@ -135,6 +137,19 @@ class MyHomePage extends StatelessWidget {
                 MaterialPageRoute(
                   builder: (context) {
                     return TopPage3(_repository);
+                  },
+                ),
+              );
+            },
+          ),
+          ListTile(
+            title: const Text('Scoped Model Sample'),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) {
+                    return TopPage2(_repository, LoadingModel());
                   },
                 ),
               );
